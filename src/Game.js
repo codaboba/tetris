@@ -5,9 +5,12 @@ export default class Game {
     this.board = [];
     this.current = null;
     this.next = null;
+    this.dir = 0;
     this.score = 0;
     this.lines = 0;
     this.pieces = []
+    this.currentX = 0;
+    this.currentY = 0;
   }
 
   init() {
@@ -44,13 +47,23 @@ export default class Game {
   }
 
   tick() {
-    // moves current down
+    const canMoveDown = this.canMove(0, 1)
+    if (canMoveDown) updateXY()
     // calls canMove to determine if piece will move down or if next is called next
     // will also check if any lines have been formed
   }
 
   canMove(dX, dY) {
-    // returns T/F
+    console.log('currentX', this.currentX)
+    console.log('currentY', this.currentY)
+    const isOccupied = (x, y) => {
+      const cellOccupied = !!this.getCell(x + dX, y + dY)
+      if(cellOccupied) result = false
+    }
+
+    let result = true
+    this.loopThruPiece(this.current, this.currentX, this.currentY, this.dir, isOccupied)
+    return result
   }
 
   calculateScore() {}
@@ -87,6 +100,12 @@ export default class Game {
   setNext(piece) { this.next = piece }
 
   setBoard(board) { this.board = board }
+
+  getCell(x, y) {
+    if (y >= this.board.length) return -1
+    if (x >= this.board[y].length) return -1
+    return this.board[y][x]
+  }
 }
 
 // this.board is a 10x20 2-D array

@@ -74,5 +74,41 @@ describe('Game class', () => {
         expect(spy.called).to.be.false
       })
     })
+
+    describe('getCell()', () => {
+      it('returns the value of the cell', () => {
+        const board = game.generateBoard()
+        board[0][0] = 1
+        game.setBoard(board)
+        expect(game.getCell(0,0)).to.equal(1)
+      })
+      it('returns -1 if the inputs are outside the bounds of the board', () => {
+        const board = game.generateBoard()
+        expect(game.getCell(board.length, 0)).to.equal(-1)
+        expect(game.getCell(0, board[0].length)).to.equal(-1)
+      })
+    })
+
+    describe('canMove()', () => {
+      it('returns a boolean', () => {
+        game.setBoard(game.generateBoard())
+        game.setCurrent(game.selectRandomPiece())
+        const canMoveDown = game.canMove(0, 1)
+        expect(canMoveDown).to.be.true
+      })
+
+      it('returns false if the piece cannot move in any 3 direction', () => {
+        game.setBoard(game.generateBoard())
+        game.setCurrent(game.selectRandomPiece())
+        game.currentY = 16
+        const canMoveDown = game.canMove(0, 1)
+        const canMoveLeft = game.canMove(-1, 0)
+        expect(canMoveDown).to.be.false
+        expect(canMoveLeft).to.be.false
+        game.currentX = 8
+        const canMoveRight = game.canMove(1, 0)
+        expect(canMoveRight).to.be.false
+      })
+    })
   })
 })
