@@ -1,4 +1,5 @@
 import Game from '../src/Game.js'
+import tetrominoes from '../src/tetrominoes.js'
 const {expect} = chai
 
 describe('Game class', () => {
@@ -17,6 +18,17 @@ describe('Game class', () => {
   })
 
   describe('Methods', () => {
+
+    describe('init()', () => {
+      it('initialize values for `this.board`, `this.current`, and `this.next`', () => {
+        const mockBoard = Array(20).fill(Array(10).fill(0))
+        game.init()
+        expect(game.board).to.deep.equal(mockBoard)
+        expect(game.current).to.have.property('type')
+        expect(game.next).to.have.property('type')
+      })
+    })
+
     describe('generateBoard()', () => {
       it('should generate a new 20 x 10 board', () => {
         const mockBoard = Array(20).fill(Array(10).fill(0))
@@ -47,13 +59,19 @@ describe('Game class', () => {
       })
     })
 
-    describe('init()', () => {
-      it('initialize values for `this.board`, `this.currentPiece`, and `this.nextPiece`', () => {
-        const mockBoard = Array(20).fill(Array(10).fill(0))
-        game.init()
-        expect(game.board).to.deep.equal(mockBoard)
-        expect(game.currentPiece).to.have.property('type')
-        expect(game.nextPiece).to.have.property('type')
+    describe('loopThruPiece', () => {
+      const piece = tetrominoes[0]
+
+      it('should call the callback fn 4 times', () => {
+        const spy = sinon.spy()
+        game.loopThruPiece(piece, 0, 0, 0, spy)
+        expect(spy.getCalls().length).to.equal(4)
+      })
+      it('should not call the callback fn on empty spaces', () => {
+        const spy = sinon.spy()
+        const emptyPiece = {...piece, blocks: [0x0000]}
+        game.loopThruPiece(emptyPiece, 0, 0, 0, spy)
+        expect(spy.called).to.be.false
       })
     })
   })

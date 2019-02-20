@@ -3,19 +3,20 @@ import tetrominoes from './tetrominoes.js'
 export default class Game {
   constructor() {
     this.board = [];
-    this.currentPiece = null;
-    this.nextPiece = null;
+    this.current = null;
+    this.next = null;
     this.score = 0;
     this.lines = 0;
     this.pieces = []
   }
 
   init() {
-    this.board = this.generateBoard()
-    this.currentPiece = this.selectRandomPiece()
-    this.nextPiece = this.selectRandomPiece()
+    this.setBoard(this.generateBoard())
+    this.setCurrent(this.selectRandomPiece())
+    this.setNext(this.selectRandomPiece())
 
     // runs setInterval on this.tick
+    setInterval(this.tick, 1000)
   }
 
   generateBoard() {
@@ -43,12 +44,12 @@ export default class Game {
   }
 
   tick() {
-    // moves currentPiece down
-    // calls canMove to determine if piece will move down or if nextPiece is called next
+    // moves current down
+    // calls canMove to determine if piece will move down or if next is called next
     // will also check if any lines have been formed
   }
 
-  canMove(dx, dy) {
+  canMove(dX, dY) {
     // returns T/F
   }
 
@@ -65,6 +66,27 @@ export default class Game {
     // clears completed lines
     // moves rows above completed lines down
   }
+
+  loopThruPiece(type, x, y, dir, fn) {
+    let row = 0, col = 0, blocks = type.blocks[dir]
+    for (let bit = 0x8000; bit > 0; bit = bit >> 1) {
+      if (blocks & bit) {
+        fn(x + col, y + row);
+      }
+      if (++col === 4) {
+        col = 0;
+        ++row;
+      }
+    }
+  }
+
+  setScore() {}
+
+  setCurrent(piece) { this.current = piece }
+
+  setNext(piece) { this.next = piece }
+
+  setBoard(board) { this.board = board }
 }
 
 // this.board is a 10x20 2-D array
